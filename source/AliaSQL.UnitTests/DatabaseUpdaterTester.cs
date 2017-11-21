@@ -4,55 +4,54 @@ using AliaSQL.Core.Model;
 using AliaSQL.Core.Services;
 using AliaSQL.Core.Services.Impl;
 using NUnit.Framework;
-using Rhino.Mocks;
 
 namespace AliaSQL.UnitTests
 {
 	[TestFixture]
 	public class DatabaseUpdaterTester
 	{
-		[Test]
-		public void Updates_database()
-		{
-			var settings = new ConnectionSettings("server", "db", true, null, null);
-            var taskAttributes = new TaskAttributes(settings, "c:\\scripts");
-            taskAttributes.RequestedDatabaseAction = RequestedDatabaseAction.Update;
-			var mocks = new MockRepository();
-            var scriptfolderexecutor = mocks.StrictMock<IScriptFolderExecutor>();
-            var queryexecutor = mocks.StrictMock<IQueryExecutor>();
-            queryexecutor.Stub(x => x.CheckDatabaseExists(taskAttributes.ConnectionSettings)).Return(true);
+		//[Test]
+		//public void Updates_database()
+		//{
+		//	var settings = new ConnectionSettings("server", "db", true, null, null);
+  //          var taskAttributes = new TaskAttributes(settings, "c:\\scripts");
+  //          taskAttributes.RequestedDatabaseAction = RequestedDatabaseAction.Update;
+		//	var mocks = new MockRepository();
+  //          var scriptfolderexecutor = mocks.StrictMock<IScriptFolderExecutor>();
+  //          var queryexecutor = mocks.StrictMock<IQueryExecutor>();
+  //          queryexecutor.Stub(x => x.CheckDatabaseExists(taskAttributes.ConnectionSettings)).Return(true);
 
-            var taskObserver = mocks.StrictMock<ITaskObserver>();
-			using (mocks.Record())
-			{
-                taskObserver.Log(string.Format("Run scripts in Update folder."));
-                scriptfolderexecutor.ExecuteScriptsInFolder(taskAttributes, "Update", taskObserver);
+  //          var taskObserver = mocks.StrictMock<ITaskObserver>();
+		//	using (mocks.Record())
+		//	{
+  //              taskObserver.Log(string.Format("Run scripts in Update folder."));
+  //              scriptfolderexecutor.ExecuteScriptsInFolder(taskAttributes, "Update", taskObserver);
 
-                taskObserver.Log(string.Format("Run scripts in Everytime folder."));
-                scriptfolderexecutor.ExecuteChangedScriptsInFolder(taskAttributes, "Everytime", taskObserver);
+  //              taskObserver.Log(string.Format("Run scripts in Everytime folder."));
+  //              scriptfolderexecutor.ExecuteChangedScriptsInFolder(taskAttributes, "Everytime", taskObserver);
 
-                taskObserver.Log(string.Format("Run scripts in RunAlways folder."));
-                scriptfolderexecutor.ExecuteRunAlwaysScriptsInFolder(taskAttributes, "RunAlways", taskObserver);
-            }
+  //              taskObserver.Log(string.Format("Run scripts in RunAlways folder."));
+  //              scriptfolderexecutor.ExecuteRunAlwaysScriptsInFolder(taskAttributes, "RunAlways", taskObserver);
+  //          }
 
-			using (mocks.Playback())
-			{
-				IDatabaseActionExecutor updater = new DatabaseUpdater(scriptfolderexecutor, queryexecutor);
-                updater.Execute(taskAttributes, taskObserver);
-			}
+		//	using (mocks.Playback())
+		//	{
+		//		IDatabaseActionExecutor updater = new DatabaseUpdater(scriptfolderexecutor, queryexecutor);
+  //              updater.Execute(taskAttributes, taskObserver);
+		//	}
 
-			mocks.VerifyAll();
-		}
-
-
-        //TODO: implement these tests
+		//	mocks.VerifyAll();
+		//}
 
 
-        //[Test]
-        //public void Update_Database_Runs_Altered_Everytime_Script()
-        //{
-        //    throw new Exception();
-        //}
+  //      //TODO: implement these tests
+
+
+  //      //[Test]
+  //      //public void Update_Database_Runs_Altered_Everytime_Script()
+  //      //{
+  //      //    throw new Exception();
+  //      //}
 
 
 

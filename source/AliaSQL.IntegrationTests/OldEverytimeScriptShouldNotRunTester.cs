@@ -4,7 +4,6 @@ using AliaSQL.Core;
 using AliaSQL.Core.Model;
 using AliaSQL.Core.Services.Impl;
 using NUnit.Framework;
-using Should;
 
 namespace AliaSQL.IntegrationTests
 {
@@ -22,17 +21,17 @@ namespace AliaSQL.IntegrationTests
 
             //act
             //run once 
-            new ConsoleAliaSQL().UpdateDatabase(settings, scriptsDirectory, RequestedDatabaseAction.Update).ShouldBeTrue();
-            new QueryExecutor().ExecuteScalarInteger(settings, "select 1 from dbo.sysobjects where name = 'TestTable' and type='U'").ShouldEqual(1);
+            Assert.True(new ConsoleAliaSQL().UpdateDatabase(settings, scriptsDirectory, RequestedDatabaseAction.Update));
+            Assert.AreEqual(1, new QueryExecutor().ExecuteScalarInteger(settings, "select 1 from dbo.sysobjects where name = 'TestTable' and type='U'"));
 
             //delete TestTable to ensure script doesn't run again
             new QueryExecutor().ExecuteNonQuery(settings, "drop table TestTable", true);
 
             //run again
-            bool success = new ConsoleAliaSQL().UpdateDatabase(settings, scriptsDirectory, RequestedDatabaseAction.Update);
+            var success = new ConsoleAliaSQL().UpdateDatabase(settings, scriptsDirectory, RequestedDatabaseAction.Update);
 
             //assert
-            new QueryExecutor().ExecuteScalarInteger(settings, "select 1 from dbo.sysobjects where name = 'TestTable' and type='U'").ShouldEqual(0);
+            Assert.AreEqual(0, new QueryExecutor().ExecuteScalarInteger(settings, "select 1 from dbo.sysobjects where name = 'TestTable' and type='U'"));
         }
 
     }

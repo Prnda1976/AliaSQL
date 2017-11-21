@@ -6,7 +6,6 @@ using AliaSQL.Core;
 using AliaSQL.Core.Model;
 using AliaSQL.Core.Services.Impl;
 using NUnit.Framework;
-using Should;
 
 namespace AliaSQL.IntegrationTests.NewRunAlwaysScriptShouldRun
 {
@@ -34,13 +33,13 @@ namespace AliaSQL.IntegrationTests.NewRunAlwaysScriptShouldRun
                 while (reader.Read())
                 {
                     records++;
-                    reader["ScriptFile"].ShouldEqual("TestScript.sql");
-                    reader["hash"].ShouldEqual(scriptFileMd5);
+                    Assert.AreEqual("TestScript.sql", reader["ScriptFile"]);
+                    Assert.AreEqual(scriptFileMd5, reader["hash"]);
                 }
             });
 
-            success.ShouldEqual(true);
-            records.ShouldEqual(1);
+            Assert.True(success);
+            Assert.AreEqual(1, records);
         }
 
         private void AssertUsdAppliedDatabaseScriptTable(ConnectionSettings settings, Action<SqlDataReader> assertAction)

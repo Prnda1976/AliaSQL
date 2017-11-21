@@ -6,7 +6,6 @@ using AliaSQL.Core;
 using AliaSQL.Core.Model;
 using AliaSQL.Core.Services.Impl;
 using NUnit.Framework;
-using Should;
 
 namespace AliaSQL.IntegrationTests
 {
@@ -24,18 +23,18 @@ namespace AliaSQL.IntegrationTests
 
             //act
             //run once 
-            new ConsoleAliaSQL().UpdateDatabase(settings, scriptsDirectory, RequestedDatabaseAction.Update).ShouldBeTrue();
-            new QueryExecutor().ExecuteScalarInteger(settings, "select 1 from dbo.sysobjects where name = 'TestTable' and type='U'").ShouldEqual(1);
+            Assert.True(new ConsoleAliaSQL().UpdateDatabase(settings, scriptsDirectory, RequestedDatabaseAction.Update));
+            Assert.AreEqual(1, new QueryExecutor().ExecuteScalarInteger(settings, "select 1 from dbo.sysobjects where name = 'TestTable' and type='U'"));
             var dateApplied = DateTime.MinValue;
             QueryUsdAppliedDatabaseScriptTable(settings, reader =>
             {
                 while (reader.Read())
                 {
-                    reader["ScriptFile"].ShouldEqual("TestScript.sql");
+                    Assert.AreEqual("TestScript.sql", reader["ScriptFile"]);
                     dateApplied = (DateTime)reader["DateApplied"];
                 }
             });
-            dateApplied.ShouldBeGreaterThan(DateTime.MinValue);
+            Assert.Greater(dateApplied, DateTime.MinValue);
 
             //delete TestTable to ensure script doesn't run again
             new QueryExecutor().ExecuteNonQuery(settings, "drop table TestTable", true);
@@ -44,7 +43,7 @@ namespace AliaSQL.IntegrationTests
             bool success = new ConsoleAliaSQL().UpdateDatabase(settings, scriptsDirectory, RequestedDatabaseAction.Update);
 
             //assert
-            new QueryExecutor().ExecuteScalarInteger(settings, "select 1 from dbo.sysobjects where name = 'TestTable' and type='U'").ShouldEqual(1);
+            Assert.AreEqual(1, new QueryExecutor().ExecuteScalarInteger(settings, "select 1 from dbo.sysobjects where name = 'TestTable' and type='U'"));
 
             DateTime dateAppliedUpdated = DateTime.MinValue; ;
             int records = 0;
@@ -53,15 +52,15 @@ namespace AliaSQL.IntegrationTests
                 while (reader.Read())
                 {
                     records++;
-                    reader["ScriptFile"].ShouldEqual("TestScript.sql");
+                    Assert.AreEqual("TestScript.sql", reader["ScriptFile"]);
                     dateAppliedUpdated = (DateTime) reader["DateApplied"];
                 }
                
             });
 
-            success.ShouldBeTrue();
-            records.ShouldEqual(1);
-            dateAppliedUpdated.ShouldBeGreaterThan(dateApplied);
+            Assert.True(success);
+            Assert.AreEqual(1, records);
+            Assert.Greater(dateAppliedUpdated, dateApplied);
         }
 
 

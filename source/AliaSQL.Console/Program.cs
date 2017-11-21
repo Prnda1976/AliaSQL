@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using AliaSQL.Core;
 using AliaSQL.Core.Model;
-using AliaSQL.Core.Services.Impl;
 
 namespace AliaSQL.Console
 {

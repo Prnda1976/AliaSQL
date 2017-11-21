@@ -8,9 +8,10 @@ using AliaSQL.Core.Services.Impl;
 
 namespace AliaSQL.Console
 {
-    public class ConsoleAliaSQL:ITaskObserver
+    public class ConsoleAliaSQL : ITaskObserver
     {
         IDictionary<string,string> _properties = new Dictionary<string, string>();
+
         public void Log(string message)
         {
             System.Console.WriteLine(message);

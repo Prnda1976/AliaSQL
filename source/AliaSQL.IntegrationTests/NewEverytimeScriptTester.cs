@@ -6,7 +6,6 @@ using AliaSQL.Core;
 using AliaSQL.Core.Model;
 using AliaSQL.Core.Services.Impl;
 using NUnit.Framework;
-using Should;
 
 namespace AliaSQL.IntegrationTests
 {
@@ -17,9 +16,9 @@ namespace AliaSQL.IntegrationTests
         public void Update_Database_Runs_New_Everytime_Script()
         {
             //arrange
-            string scriptsDirectory =  Path.Combine("Scripts",GetType().Name.Replace("Tester", ""));
+            string scriptsDirectory = Path.Combine("Scripts", GetType().Name.Replace("Tester", ""));
 
-            string scriptFileMd5 = ChangeScriptExecutor.GetFileMD5Hash(Path.Combine(scriptsDirectory,"Everytime", "TestScript.sql"));
+            string scriptFileMd5 = ChangeScriptExecutor.GetFileMD5Hash(Path.Combine(scriptsDirectory, "Everytime", "TestScript.sql"));
             var settings = new ConnectionSettings(".\\sqlexpress", "aliasqltest", true, null, null);
             new ConsoleAliaSQL().UpdateDatabase(settings, scriptsDirectory, RequestedDatabaseAction.Drop);
 
@@ -34,13 +33,13 @@ namespace AliaSQL.IntegrationTests
                 while (reader.Read())
                 {
                     records++;
-                    reader["ScriptFile"].ShouldEqual("TestScript.sql");
-                    reader["hash"].ShouldEqual(scriptFileMd5);
+                    Assert.AreEqual("TestScript.sql", reader["ScriptFile"]);
+                    Assert.AreEqual(scriptFileMd5, reader["hash"]);
                 }
             });
 
-            success.ShouldEqual(true);
-            records.ShouldEqual(1);
+            Assert.True(success);
+            Assert.AreEqual(1, records);
         }
 
         private void AssertUsdAppliedDatabaseScriptTable(ConnectionSettings settings, Action<SqlDataReader> assertAction)

@@ -2,7 +2,6 @@
 using System.IO;
 using System.Security.Cryptography;
 using AliaSQL.Core.Model;
-using AliaSQL.Core;
 
 namespace AliaSQL.Core.Services.Impl
 {

@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
-using AliaSQL.Console;
 using AliaSQL.Core;
 using AliaSQL.Core.Model;
 using AliaSQL.Core.Services.Impl;
 using NUnit.Framework;
-using Should;
 
 namespace AliaSQL.IntegrationTests
 {
@@ -35,12 +33,12 @@ namespace AliaSQL.IntegrationTests
                 while (reader.Read())
                 {
                     records++;
-                    reader["ScriptFile"].ShouldEqual("0001-Update.sql");
+                    Assert.AreEqual("0001-Update.sql", reader["ScriptFile"]);
                 }
             });
 
-            success.ShouldEqual(true);
-            records.ShouldEqual(1);
+            Assert.True(success);
+            Assert.AreEqual(1, records);
         }
 
         [Test]
@@ -58,10 +56,10 @@ namespace AliaSQL.IntegrationTests
             bool updated = new DbUpdater().UpdateDatabase(new ConnectionStringGenerator().GetConnectionString(settings, true), RequestedDatabaseAction.Update, scriptsDirectory).Success;
 
             bool dbexistsafter = new DbUpdater().DatabaseExists(new ConnectionStringGenerator().GetConnectionString(settings, true));
-           
+
             //assert
-            dbexistsbefore.ShouldEqual(false);
-            dbexistsafter.ShouldEqual(true);
+            Assert.False(dbexistsbefore);
+            Assert.False(dbexistsafter);
         }
 
         [Test]
@@ -78,7 +76,7 @@ namespace AliaSQL.IntegrationTests
             List<string> pendingChanges = new DbUpdater().PendingChanges(new ConnectionStringGenerator().GetConnectionString(settings, true), scriptsDirectory.Replace("DbUpdater", "NewEverytimeScript"));
 
             //assert
-            pendingChanges.Count.ShouldEqual(1);
+            Assert.AreEqual(1, pendingChanges.Count);
         }
 
         [Test]
@@ -97,8 +95,8 @@ namespace AliaSQL.IntegrationTests
             int dbversionafterupdate = new DbUpdater().DatabaseVersion(new ConnectionStringGenerator().GetConnectionString(settings, true));
 
             //assert
-            dbversionbeforeupdate.ShouldEqual(0);
-            dbversionafterupdate.ShouldEqual(1);
+            Assert.AreEqual(0, dbversionbeforeupdate);
+            Assert.AreEqual(1, dbversionafterupdate);
         }
 
         private void AssertUsdAppliedDatabaseScriptTable(ConnectionSettings settings, Action<SqlDataReader> assertAction)
@@ -111,8 +109,7 @@ namespace AliaSQL.IntegrationTests
                 using (var command = new SqlCommand())
                 {
                     command.Connection = connection;
-                    command.CommandText =
-                        "SELECT  [ScriptFile],[DateApplied],[Version],[hash] FROM [dbo].[usd_AppliedDatabaseScript]";
+                    command.CommandText = "SELECT  [ScriptFile],[DateApplied],[Version],[hash] FROM [dbo].[usd_AppliedDatabaseScript]";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         assertAction(reader);
